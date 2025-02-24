@@ -1,0 +1,94 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Http\Requests\UserSigninRequest;
+use App\Http\Requests\UserSignupRequest;
+use App\Models\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
+use Tymon\JWTAuth\Exceptions\JWTException;
+use Tymon\JWTAuth\Facades\JWTAuth;
+
+class UsersController extends Controller
+{
+    public function signup(UserSignupRequest $request) {
+        return DB::transaction(function() use ($request) {
+            $user = User::create([
+                'id' => Str::uuid(),
+                'name' => $request->get('name'),
+                'email' => $request->get('email'),
+                'password' => Hash::make($request->get('password')),
+            ]);
+
+            $token = JWTAuth::fromUser($user);
+
+            return response()->json([
+                'user' => $user,
+                'token' => $token,
+            ], 201);
+        });
+    }
+
+    public function signin(UserSigninRequest $request) {
+        $credentials = $request->only('email','password');
+        try {
+            if (!$token = JWTAuth::attempt($credentials)) {
+                return response()->json([
+                    'message' => 'Invalid Credentials',
+                ], 401);
+            }
+
+            $user = Auth::user();
+            $token = JWTAuth::claims([])->fromUser($user);
+
+            return response()->json([
+                'user' => $user,
+                'token' => $token,
+            ], 200);
+        } catch (JWTException $e) {
+            return response()->json([
+                'message' => 'Invalid Credentials',
+                'error' => $e->getMessage(),
+            ], 401);
+        }
+    }
+
+    public function me() {
+        try {
+            if (! $user = JWTAuth::parseToken()->authenticate()) {
+                return response()->json([
+                    'message' => 'Unauthorized',
+                    'error' => null,
+                ], 401);
+            }
+
+            return response()->json([
+                'user' => $user,
+            ], 200);
+        } catch (JWTException $e) {
+            return response()->json([
+                'message' => 'Unauthorized',
+                'error' => $e->getMessage(),
+            ], 401);
+        }
+    }
+
+    public function signout() {
+        try {
+            JWTAuth::invalidate(JWTAuth::getToken());
+
+            return response()->json([
+                'message' => 'Successfully logged out!',
+            ], 200);
+        } catch (JWTException $e) {
+            return response()->json([
+                'message' => 'Unauthorized',
+                'error' => $e->getMessage(),
+            ], 401);
+        }
+    }
+}
