@@ -9,5 +9,5 @@ Route::post("signin", [UsersController::class, "signin"]);
 
 Route::middleware([JwtMiddleware::class])->group(function() {
     Route::get("me", [UsersController::class, "me"]);
-    Route::post("signout", [UsersController::class,"logout"]);
+    Route::post("signout", [UsersController::class,"signout"]);
 });
