@@ -1,0 +1,5 @@
+{
+  "watch": ["src"],
+  "ext": ".js,.ts",
+  "exec": "nodemon --exec node -r ts-node/register -r tsconfig-paths/register --env-file=.env ./src/index.ts"
+}
