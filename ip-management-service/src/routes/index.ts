@@ -3,6 +3,6 @@ import ipRoutes from "./ip.routes";
 
 const router: Router = Router();
 
-router.use("/ip-addresses", ipRoutes);
+router.use("", ipRoutes);
 
 export default router;

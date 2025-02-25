@@ -2,5 +2,9 @@
   {
     "route": "/auth",
     "target": "http://localhost:8000/api"
+  },
+  {
+    "route": "/ip-addresses",
+    "target": "http://localhost:3002"
   }
 ]
