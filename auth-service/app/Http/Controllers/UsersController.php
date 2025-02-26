@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\PermissionRequest;
 use App\Http\Requests\UserSigninRequest;
 use App\Http\Requests\UserSignupRequest;
+use App\Http\Requests\VerificationRequest;
 use App\Models\User;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -85,12 +86,18 @@ class UsersController extends Controller
         }
     }
 
-    public function verify_permission(PermissionRequest $request) {
+    public function index(VerificationRequest $request) {
         try {
             $user = User::where('id', Auth::user()->id)->first();
-            $permission = $request->get('key');
 
-            if (!$user->hasPermissionTo(permission: $permission)) {
+            if ($request->get('type') === 'permission' && !$user->hasPermissionTo($request->get('key'))) {
+                return response()->json([
+                    'message' => 'Unauthorized',
+                    'error' => null,
+                ], 401);
+            }
+
+            if ($request->get('type') === 'role' && !$user->hasRole($request->get('key'))) {
                 return response()->json([
                     'message' => 'Unauthorized',
                     'error' => null,
@@ -101,43 +108,7 @@ class UsersController extends Controller
                 'message' => 'Authorized',
                 'data' => $user,
             ], 200);
-
-        } catch (JWTException $e) {
-            return response()->json([
-                'message'=> 'Unauthorized',
-                'error' => $e->getMessage(),
-            ], 401);
-        } catch (\Exception $e) {
-            return response()->json([
-                'message' => 'Unauthorized',
-                'error' => $e->getMessage(),
-            ], 401);
-        }
-    }
-
-    public function verify_role(PermissionRequest $request) {
-        try {
-            $user = User::where('id', Auth::user()->id)->first();
-            $permission = $request->get('key');
-
-            if (!$user->hasRole($permission)) {
-                return response()->json([
-                    'message' => 'Unauthorized',
-                    'error' => null,
-                ], 401);
-            }
-
-            return response()->json([
-                'message' => 'Authorized',
-                'data' => $user,
-            ], 200);
-
-        } catch (JWTException $e) {
-            return response()->json([
-                'message'=> 'Unauthorized',
-                'error' => $e->getMessage(),
-            ], 401);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return response()->json([
                 'message' => 'Unauthorized',
                 'error' => $e->getMessage(),
