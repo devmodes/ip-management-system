@@ -105,8 +105,9 @@ class UsersController extends Controller
             }
 
             return response()->json([
-                'message' => 'Authorized',
-                'data' => $user,
+                'user' => $user,
+                'permissions' => $user->getAllPermissions()->pluck('name'),
+                'roles' => $user->getRoleNames(),
             ], 200);
         } catch (Exception $e) {
             return response()->json([

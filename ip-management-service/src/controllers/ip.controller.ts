@@ -1,21 +1,24 @@
-import { NotFoundException } from "@utils/exceptions";
+import { NotFoundException, UnauthorizedException } from "@utils/exceptions";
 import { prismaClient } from "@utils/prisma";
 import { Created, Successful } from "@utils/success";
 import { NextFunction, Request, Response } from "express";
+import { IPAddressPolicy } from "src/policies/ip-address.policy";
+import { User } from "src/types/User";
 
 export const createIPAddress = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
-  const { label, ip_address, comment } = req.body;
+  const { label, ip, type, comment } = req.body;
 
   const ipAddress = await prismaClient.ipAddress.create({
     data: {
       label,
-      address: ip_address,
+      ip,
+      type,
       comment,
-      created_by: "Make this dynamic uuid from request headers",
+      created_by: req.user?.id as string,
     },
   });
 
@@ -67,6 +70,10 @@ export const updateIPAddress = async (
 
   if (!ipAddress) {
     throw new NotFoundException();
+  }
+
+  if (!IPAddressPolicy.canUpdate(req.user as User, ipAddress)) {
+    throw new UnauthorizedException();
   }
 
   ipAddress = await prismaClient.ipAddress.update({
