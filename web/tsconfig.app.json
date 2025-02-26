@@ -15,6 +15,7 @@
       "@providers/*": ["./src/providers/*"],
       "@routes/*": ["./src/routes/*"],
       "@pages/*": ["./src/pages/*"],
+      "@layouts/*": ["./src/layouts/*"],
       "@/*": ["./src/*"]
     },
 
