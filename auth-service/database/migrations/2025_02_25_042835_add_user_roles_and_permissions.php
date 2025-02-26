@@ -20,12 +20,11 @@ return new class extends Migration
         $user = Role::create([ 'name'=> 'user'] );
 
         // Add default permissions
-        Permission::create([ 'name'=> 'create.ip'] );
-        Permission::create([ 'name'=> 'update.ip'] );
-        Permission::create([ 'name'=> 'update.own.ip'] );
-        Permission::create([ 'name'=> 'update.ip.label'] );
-        Permission::create([ 'name'=> 'read.ip'] );
-        Permission::create([ 'name'=> 'delete.ip'] );
+        Permission::create([ 'name'=> 'create:ip'] );
+        Permission::create([ 'name'=> 'update:ip'] );
+        Permission::create([ 'name'=> 'update:ip-label'] );
+        Permission::create([ 'name'=> 'read:ip'] );
+        Permission::create([ 'name'=> 'delete:ip'] );
 
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
 
@@ -33,7 +32,7 @@ return new class extends Migration
         $admin->givePermissionTo(Permission::all());
 
         // Limited permission of the users
-        $user->givePermissionTo(permissions: ['create.ip', 'update.own.ip', 'update.ip.label', 'read.ip']);
+        $user->givePermissionTo(permissions: ['create:ip', 'update:ip-label', 'read:ip']);
     }
 
     /**
