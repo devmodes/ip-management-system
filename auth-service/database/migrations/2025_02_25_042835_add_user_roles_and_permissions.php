@@ -22,7 +22,6 @@ return new class extends Migration
         // Add default permissions
         Permission::create([ 'name'=> 'create:ip'] );
         Permission::create([ 'name'=> 'update:ip'] );
-        Permission::create([ 'name'=> 'update:ip-label'] );
         Permission::create([ 'name'=> 'read:ip'] );
         Permission::create([ 'name'=> 'delete:ip'] );
 
@@ -32,7 +31,7 @@ return new class extends Migration
         $admin->givePermissionTo(Permission::all());
 
         // Limited permission of the users
-        $user->givePermissionTo(permissions: ['create:ip', 'update:ip-label', 'read:ip']);
+        $user->givePermissionTo(permissions: ['create:ip', 'read:ip']);
     }
 
     /**
