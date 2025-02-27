@@ -10,9 +10,18 @@ jobs:
     steps:
       - name: Extract label from branch name
         id: extract_label
-        run: echo "LABEL=$(echo '${{ github.head_ref }}' | cut -d'/' -f1)" >> $GITHUB_ENV
+        run: |
+          LABEL=$(echo '${{ github.head_ref }}' | cut -d'/' -f1)
+          ALLOWED_LABELS="feature bugfix hotfix documentation enhancement revision"
+          
+          if echo "$ALLOWED_LABELS" | grep -wq "$LABEL"; then
+            echo "LABEL=$LABEL" >> $GITHUB_ENV
+          else
+            echo "LABEL=" >> $GITHUB_ENV
+          fi
 
       - name: Add label to PR
+        if: env.LABEL != ''
         uses: actions-ecosystem/action-add-labels@v1
         with:
           github_token: ${{ secrets.PAT_TOKEN }}
