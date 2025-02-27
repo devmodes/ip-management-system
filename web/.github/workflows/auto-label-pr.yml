@@ -1,0 +1,19 @@
+name: Auto Label PR Based on Branch Name
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  label-pr:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Extract label from branch name
+        id: extract_label
+        run: echo "LABEL=$(echo '${{ github.head_ref }}' | cut -d'/' -f1)" >> $GITHUB_ENV
+
+      - name: Add label to PR
+        uses: actions-ecosystem/action-add-labels@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          labels: ${{ env.LABEL }}
