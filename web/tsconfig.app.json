@@ -9,6 +9,7 @@
 
     "paths": {
       "@assets/*": ["./src/assets/*"],
+      "@config/*": ["./src/config/*"],
       "@components/*": ["./src/components/*"],
       "@hooks/*": ["./src/hooks/*"],
       "@lib/*": ["./src/lib/*"],
@@ -17,6 +18,7 @@
       "@pages/*": ["./src/pages/*"],
       "@layouts/*": ["./src/layouts/*"],
       "@store/*": ["./src/store/*"],
+      "@services/*": ["./src/services/*"],
       "@/*": ["./src/*"]
     },
 

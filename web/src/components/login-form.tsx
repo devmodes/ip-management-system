@@ -10,11 +10,14 @@ import {
 import { Input } from "@components/ui/input";
 import { Label } from "@components/ui/label";
 import { Link } from "react-router-dom";
+import { useLoginForm } from "@hooks/useLoginForm";
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"div">) {
+  const { form, handleChange, handleSubmit } = useLoginForm();
+
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
@@ -57,9 +60,12 @@ export function LoginForm({
                   <Label htmlFor="email">Email</Label>
                   <Input
                     id="email"
+                    name="email"
                     type="email"
                     placeholder="m@example.com"
                     required
+                    value={form.email}
+                    onChange={handleChange}
                   />
                 </div>
                 <div className="grid gap-2">
@@ -72,9 +78,16 @@ export function LoginForm({
                       Forgot your password?
                     </a>
                   </div>
-                  <Input id="password" type="password" required />
+                  <Input
+                    id="password"
+                    type="password"
+                    name="password"
+                    required
+                    value={form.password}
+                    onChange={handleChange}
+                  />
                 </div>
-                <Button type="submit" className="w-full">
+                <Button type="submit" className="w-full" onClick={handleSubmit}>
                   Login
                 </Button>
               </div>
