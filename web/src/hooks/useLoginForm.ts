@@ -1,45 +1,34 @@
 import { useSigninMutation } from "@services/auth-service";
-import { ChangeEvent, useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 
-type LoginForm = {
-  email: string;
-  password: string;
-};
+const loginFormSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(6),
+});
 
-export const useLoginForm = () => {
-  const [form, setForm] = useState<LoginForm>({
-    email: "",
-    password: "",
+type LoginForm = z.infer<typeof loginFormSchema>;
+
+export const useLoginForm = (defaultValues?: LoginForm) => {
+  const form = useForm<LoginForm>({
+    resolver: zodResolver(loginFormSchema),
+    defaultValues,
   });
-  const [signin, { data, isSuccess, isError, isLoading, error }] =
-    useSigninMutation();
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setForm({
-      ...form,
-      [e.target.name]: e.target.value,
-    });
+  const {
+    formState: { isSubmitting },
+  } = form;
+
+  const [signin] = useSigninMutation();
+
+  const onSubmit = async (data: LoginForm) => {
+    await signin(data);
   };
-
-  const handleSubmit = async () => {
-    await signin(form);
-  };
-
-  useEffect(() => {
-    if (data) {
-      console.log(data);
-    }
-  }, [isSuccess]);
-
-  useEffect(() => {
-    if (error) {
-      console.log(error);
-    }
-  }, [isError]);
 
   return {
     form,
-    handleChange,
-    handleSubmit,
+    isSubmitting,
+    onSubmit: form.handleSubmit(onSubmit),
   };
 };
