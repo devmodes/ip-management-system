@@ -1,4 +1,3 @@
-# Add 'feature' label to any PR where the head branch name starts with `feature` or has a `feature` section in the name
 feature:
   - head-branch: ["^feature", "feature"]
 bug:
@@ -9,6 +8,5 @@ enhancement:
   -head-branch: ["^enhancement", "enhancement"]
 revision:
   -head-branch: ["^revision", "revision"]
-# Add 'release' label to any PR that is opened against the `main` branch
 release:
   - base-branch: "main"
