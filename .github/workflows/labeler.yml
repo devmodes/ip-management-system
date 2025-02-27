@@ -1,16 +1,19 @@
-name: "Pull Request Labeler"
+name: Auto Label PR Based on Branch Name
+
 on:
   pull_request:
-    branches:
-      - main
-      - dev
+    types: [opened, synchronize]
 
 jobs:
-  labeler:
-    permissions:
-      contents: read
-      pull-requests: write
+  label-pr:
     runs-on: ubuntu-latest
     steps:
-      - id: label-the-pr
-      - uses: actions/labeler@v5
+      - name: Extract label from branch name
+        id: extract_label
+        run: echo "LABEL=$(echo '${{ github.head_ref }}' | cut -d'/' -f1)" >> $GITHUB_ENV
+
+      - name: Add label to PR
+        uses: actions-ecosystem/action-add-labels@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          labels: ${{ env.LABEL }}
