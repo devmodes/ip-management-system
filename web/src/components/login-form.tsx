@@ -24,7 +24,10 @@ export function LoginForm({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"div">) {
-  const { form, onSubmit, isSubmitting } = useLoginForm();
+  const { form, onSubmit, isSubmitting } = useLoginForm({
+    email: "",
+    password: "",
+  });
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
