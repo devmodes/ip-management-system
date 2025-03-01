@@ -5,8 +5,10 @@
     { "path": "./tsconfig.node.json" }
   ],
   "compilerOptions": {
+    "strict": true,
     "paths": {
       "@assets/*": ["./src/assets/*"],
+      "@config/*": ["./src/config/*"],
       "@components/*": ["./src/components/*"],
       "@hooks/*": ["./src/hooks/*"],
       "@lib/*": ["./src/lib/*"],
@@ -14,6 +16,8 @@
       "@routes/*": ["./src/routes/*"],
       "@pages/*": ["./src/pages/*"],
       "@layouts/*": ["./src/layouts/*"],
+      "@store/*": ["./src/store/*"],
+      "@services/*": ["./src/services/*"],
       "@/*": ["./src/*"]
     }
   }
