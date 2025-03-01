@@ -12,7 +12,7 @@ export const api = createApi({
       const token = state.auth.token;
 
       if (token) {
-        headers.set("Authorization", token);
+        headers.set("Authorization", `Bearer ${token}`);
       }
 
       return headers;
