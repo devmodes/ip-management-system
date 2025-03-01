@@ -13,17 +13,11 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum IPType {
-  ipv4
-  ipv6
-}
-
 model IpAddress {
   id String @id @default(uuid())
   ip String
   label String
   comment String?
-  type IPType
   created_by String
   updated_at DateTime?
   created_at DateTime @default(now())

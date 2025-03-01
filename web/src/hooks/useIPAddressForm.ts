@@ -1,5 +1,8 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useUpdateIPAddressMutation } from "@store/api/ip-address-api";
+import {
+  useCreateIPAddressMutation,
+  useUpdateIPAddressMutation,
+} from "@store/api/ip-address-api";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -18,6 +21,7 @@ type IPAddressFormArgs = {
 
 export const useIPAddressForm = ({ defaultValues, id }: IPAddressFormArgs) => {
   const [updateRecord] = useUpdateIPAddressMutation();
+  const [createRecord] = useCreateIPAddressMutation();
   const form = useForm<IPAddressForm>({
     resolver: zodResolver(ipAddressFormSchema),
     defaultValues,
@@ -37,7 +41,14 @@ export const useIPAddressForm = ({ defaultValues, id }: IPAddressFormArgs) => {
           comment: data.comment || "",
         };
 
-        await updateRecord(body).unwrap();
+        await updateRecord(body);
+      } else {
+        await createRecord({
+          label: data.label,
+          ip: data.ip,
+          comment: data.comment || "",
+        });
+        data;
       }
     } catch (error: any) {}
   };

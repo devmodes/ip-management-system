@@ -10,13 +10,12 @@ export const createIPAddress = async (
   res: Response,
   next: NextFunction
 ) => {
-  const { label, ip, type, comment } = req.body;
+  const { label, ip, comment } = req.body;
 
   const ipAddress = await prismaClient.ipAddress.create({
     data: {
       label,
       ip,
-      type,
       comment,
       created_by: req.user?.id as string,
     },

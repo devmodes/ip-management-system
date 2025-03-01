@@ -10,15 +10,28 @@ import {
   DialogTrigger,
 } from "@components/ui/dialog";
 import { IPAddress } from "@lib/types/ip-address";
-import { PropsWithChildren } from "react";
+import { useDeleteIPAddressMutation } from "@store/api/ip-address-api";
+import { PropsWithChildren, useState } from "react";
 
 type DeleteIPDialogProps = PropsWithChildren & {
   item: IPAddress;
 };
 
 function DeleteIPDialog({ children, item }: DeleteIPDialogProps) {
+  const [open, setOpen] = useState(false);
+  const [deleteRecord] = useDeleteIPAddressMutation();
+
+  const onConfirm = async () => {
+    try {
+      await deleteRecord(item.id).unwrap();
+      setOpen(false);
+    } catch (error: any) {
+      console.log(error);
+    }
+  };
+
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent>
         <DialogHeader>
@@ -48,7 +61,9 @@ function DeleteIPDialog({ children, item }: DeleteIPDialogProps) {
               Close
             </Button>
           </DialogClose>
-          <Button size="sm">Confirm</Button>
+          <Button size="sm" onClick={onConfirm}>
+            Confirm
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

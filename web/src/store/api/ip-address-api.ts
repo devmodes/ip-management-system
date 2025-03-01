@@ -3,6 +3,14 @@ import { api } from "@store/api";
 
 export const ipAddressApi = api.injectEndpoints({
   endpoints: (builder) => ({
+    createIPAddress: builder.mutation({
+      query: (data: Omit<IPAddress, "id" | "created_at">) => ({
+        url: `/ip-addresses`,
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: [{ type: "ipAddress", id: "list" }],
+    }),
     ipAddressList: builder.query({
       query: () => ({
         url: "/ip-addresses",
@@ -29,6 +37,7 @@ export const ipAddressApi = api.injectEndpoints({
 });
 
 export const {
+  useCreateIPAddressMutation,
   useIpAddressListQuery,
   useUpdateIPAddressMutation,
   useDeleteIPAddressMutation,

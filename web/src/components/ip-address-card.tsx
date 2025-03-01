@@ -16,7 +16,6 @@ import { Edit3Icon, TrashIcon } from "lucide-react";
 
 type IPAddressCardProps = {
   item: IPAddress;
-  toggleDialog: () => void;
 };
 
 function IPAddressCard({ item }: IPAddressCardProps) {
