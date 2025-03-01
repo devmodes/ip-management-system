@@ -5,11 +5,6 @@ import { Badge } from "@components/ui/badge";
 import { Button } from "@components/ui/button";
 import { Card, CardHeader, CardTitle } from "@components/ui/card";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-} from "@components/ui/dropdown-menu";
-import {
   HoverCard,
   HoverCardContent,
   HoverCardTrigger,
@@ -17,13 +12,7 @@ import {
 import { Separator } from "@components/ui/separator";
 import { formatDate } from "@lib/helpers";
 import { IPAddress } from "@lib/types/ip-address";
-import { DropdownMenuItem } from "@radix-ui/react-dropdown-menu";
-import {
-  Edit3Icon,
-  FileEditIcon,
-  MoreHorizontalIcon,
-  TrashIcon,
-} from "lucide-react";
+import { Edit3Icon, TrashIcon } from "lucide-react";
 
 type IPAddressCardProps = {
   item: IPAddress;

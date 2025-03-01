@@ -1,13 +1,6 @@
 import IPAddressCard from "@components/ip-address-card";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@components/ui/dialog";
 import { IPAddress } from "@lib/types/ip-address";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 
 type IPAddressListProps = {
   items: IPAddress[];

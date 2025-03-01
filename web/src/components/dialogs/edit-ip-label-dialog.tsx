@@ -1,5 +1,4 @@
 import { Button } from "@components/ui/button";
-import { CardFooter } from "@components/ui/card";
 import {
   Dialog,
   DialogClose,
