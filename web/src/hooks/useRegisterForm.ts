@@ -1,4 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useAppDispatch } from "@hooks/useAppStore";
 import { handleError } from "@lib/error-handler";
 import { User } from "@lib/types/user";
 import { useSignupMutation } from "@services/auth-service";
@@ -27,6 +28,7 @@ type ResponseType = {
 };
 
 export const useRegisterForm = (defaultValues?: RegisterForm) => {
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const form = useForm<RegisterForm>({
     resolver: zodResolver(registerFormSchema),
@@ -42,10 +44,12 @@ export const useRegisterForm = (defaultValues?: RegisterForm) => {
     try {
       const res: ResponseType = await signup(data).unwrap();
 
-      authenticate({
-        user: res.user,
-        token: res.token,
-      });
+      dispatch(
+        authenticate({
+          user: res.user,
+          token: res.token,
+        })
+      );
 
       navigate("/app");
     } catch (error: any) {

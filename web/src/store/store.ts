@@ -1,24 +1,15 @@
-import { combineReducers, configureStore } from "@reduxjs/toolkit";
+import { configureStore } from "@reduxjs/toolkit";
 import { authApi } from "@services/auth-service";
-import { authReducer } from "@store/reducers/auth";
-import storage from "redux-persist/lib/storage";
-import { persistReducer } from "redux-persist";
-
-const authConfig = {
-  key: "Auth",
-  storage,
-};
-
-const reducers = combineReducers({
-  auth: persistReducer(authConfig, authReducer),
-  [authApi.reducerPath]: authApi.reducer,
-});
+import reducers from "@store/reducers";
+import { persistStore } from "redux-persist";
 
 export const store = configureStore({
   reducer: reducers,
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(authApi.middleware),
 });
+
+export const persistor = persistStore(store);
 
 // Infer the `RootState` and `AppDispatch` types from the store itself
 export type RootState = ReturnType<typeof store.getState>;
