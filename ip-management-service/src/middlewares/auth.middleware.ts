@@ -19,13 +19,11 @@ export const auth = async (req: Request, _: Response, next: NextFunction) => {
       .then((res: any) => res.data)
       .then((data: ResponseData["data"]) => {
         const { user, permissions, roles } = data;
-        console.log(user);
         req.user = {
           ...user,
           permissions,
           roles,
         };
-
         next();
       })
       .catch(() => next(new UnauthorizedException()));
