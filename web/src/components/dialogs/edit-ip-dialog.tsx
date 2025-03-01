@@ -21,14 +21,15 @@ import { Input } from "@components/ui/input";
 import { Spinner } from "@components/ui/spinner";
 import { useIPAddressForm } from "@hooks/useIPAddressForm";
 import { IPAddress } from "@lib/types/ip-address";
-import { PropsWithChildren } from "react";
+import { PropsWithChildren, useEffect, useState } from "react";
 
 type EditIPDialogProps = PropsWithChildren & {
   item: IPAddress;
 };
 
 function EditIPDialog({ item, children }: EditIPDialogProps) {
-  const { form, onSubmit, isSubmitting } = useIPAddressForm({
+  const [open, setOpen] = useState(false);
+  const { form, onSubmit, isSubmitting, onSuccess } = useIPAddressForm({
     id: item.id,
     defaultValues: {
       ip: item.ip,
@@ -37,8 +38,12 @@ function EditIPDialog({ item, children }: EditIPDialogProps) {
     },
   });
 
+  useEffect(() => {
+    setOpen(false);
+  }, [onSuccess]);
+
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent>
         <DialogHeader>

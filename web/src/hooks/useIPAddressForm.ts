@@ -24,7 +24,7 @@ export const useIPAddressForm = ({ defaultValues, id }: IPAddressFormArgs) => {
   });
   const {
     handleSubmit,
-    formState: { isSubmitting },
+    formState: { isSubmitting, isSubmitSuccessful },
   } = form;
 
   const onSubmit = async (data: IPAddressForm) => {
@@ -46,5 +46,6 @@ export const useIPAddressForm = ({ defaultValues, id }: IPAddressFormArgs) => {
     form,
     onSubmit: handleSubmit(onSubmit),
     isSubmitting,
+    onSuccess: isSubmitSuccessful,
   };
 };
