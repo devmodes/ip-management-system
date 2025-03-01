@@ -1,8 +1,8 @@
 import { combineReducers } from "@reduxjs/toolkit";
-import { authApi } from "@services/auth-service";
 import { authReducer } from "@store/reducers/auth";
 import storage from "redux-persist/lib/storage";
 import { persistReducer } from "redux-persist";
+import { authApi } from "@store/api/auth-api";
 
 const authConfig = {
   key: "Auth",

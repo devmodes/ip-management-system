@@ -7,6 +7,7 @@ import {
   updateIPAddress,
 } from "@controllers/ip.controller";
 import { auth } from "@middlewares/auth.middleware";
+import { policy } from "@middlewares/policy.middleware";
 import { validate } from "@middlewares/validate.middleware";
 import { createIPSchema } from "@schema/create-ip.schema";
 import { Router } from "express";
@@ -16,17 +17,25 @@ const router: Router = Router();
 
 router.post(
   "/",
-  [auth, validate(createIPSchema)],
-  controller(createIPAddress, IPAddressPolicy.canCreate)
+  [auth, policy(IPAddressPolicy.canCreate), validate(createIPSchema)],
+  controller(createIPAddress)
 );
-router.get("/", auth, controller(getIPAddresses, IPAddressPolicy.canView));
-router.get("/:id", auth, controller(getIPAddress, IPAddressPolicy.canView));
+router.get(
+  "/",
+  [auth, policy(IPAddressPolicy.canView)],
+  controller(getIPAddresses)
+);
+router.get(
+  "/:id",
+  [auth, policy(IPAddressPolicy.canView)],
+  controller(getIPAddress)
+);
 
 router.put("/:id", auth, controller(updateIPAddress));
 router.delete(
   "/:id",
-  auth,
-  controller(deleteIPAddress, IPAddressPolicy.canDelete)
+  [auth, policy(IPAddressPolicy.canDelete)],
+  controller(deleteIPAddress)
 );
 
 export default router;
