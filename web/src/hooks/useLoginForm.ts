@@ -1,4 +1,3 @@
-import { useSigninMutation } from "@services/auth-service";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -6,6 +5,7 @@ import { authenticate } from "@store/reducers/auth";
 import { User } from "@lib/types/user";
 import { useNavigate } from "react-router-dom";
 import { useAppDispatch } from "@hooks/useAppStore";
+import { useSigninMutation } from "@store/api/auth-api";
 
 const loginFormSchema = z.object({
   email: z.string().email(),

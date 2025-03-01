@@ -1,12 +1,12 @@
 import { configureStore } from "@reduxjs/toolkit";
-import { authApi } from "@services/auth-service";
+import { api } from "@store/api";
 import reducers from "@store/reducers";
 import { persistStore } from "redux-persist";
 
 export const store = configureStore({
   reducer: reducers,
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(authApi.middleware),
+    getDefaultMiddleware().concat(api.middleware),
 });
 
 export const persistor = persistStore(store);
