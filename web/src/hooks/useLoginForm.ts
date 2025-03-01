@@ -3,6 +3,8 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { authenticate } from "@store/reducers/auth";
+import { User } from "@lib/types/user";
+import { useNavigate } from "react-router-dom";
 
 const loginFormSchema = z.object({
   email: z.string().email(),
@@ -11,7 +13,13 @@ const loginFormSchema = z.object({
 
 type LoginForm = z.infer<typeof loginFormSchema>;
 
+type ResponseType = {
+  user: User;
+  token: string;
+};
+
 export const useLoginForm = (defaultValues?: LoginForm) => {
+  const navigate = useNavigate();
   const form = useForm<LoginForm>({
     resolver: zodResolver(loginFormSchema),
     defaultValues,
@@ -26,12 +34,14 @@ export const useLoginForm = (defaultValues?: LoginForm) => {
 
   const onSubmit = async (data: LoginForm) => {
     try {
-      const response = await signin(data).unwrap();
+      const res: ResponseType = await signin(data).unwrap();
 
       authenticate({
-        user: response.user,
-        token: response.token,
+        user: res.user,
+        token: res.token,
       });
+
+      navigate("/app");
     } catch (error: any) {
       if (error.status === 401) {
         setError("email", { message: error.data?.message });

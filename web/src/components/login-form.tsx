@@ -119,7 +119,7 @@ export function LoginForm({
                     disabled={isSubmitting}
                   >
                     {isSubmitting && <Spinner />}
-                    {isSubmitting ? "Loading..." : "Sign In"}
+                    Sign In
                   </Button>
                 </div>
                 <div className="text-center text-sm">
