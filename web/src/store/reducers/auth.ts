@@ -16,7 +16,6 @@ export const authSlice = createSlice({
   initialState,
   reducers: {
     authenticate: (state: State, { payload }: PayloadAction<State>) => {
-      console.log(payload);
       state.user = payload.user;
       state.token = payload.token;
     },
