@@ -5,24 +5,21 @@ import { createContext, PropsWithChildren, useContext } from "react";
 type AuthProviderProps = PropsWithChildren;
 
 type AuthProviderState = {
-  user: User | null;
-  token: string | null;
+  user: User;
+  token: string;
   isSignedIn?: boolean;
 };
 
-const initialState: AuthProviderState = {
-  user: null,
-  token: null,
-};
-
-const AuthProviderContext = createContext<AuthProviderState>(initialState);
+const AuthProviderContext = createContext<AuthProviderState | undefined>(
+  undefined
+);
 
 export const AuthProvider = ({ children, ...props }: AuthProviderProps) => {
   const { user, token } = useAppSelector((state) => state.auth);
 
   const value = {
-    user,
-    token,
+    user: user as User,
+    token: token as string,
     isSignedIn: user !== null && token !== null,
   };
 
