@@ -1,7 +1,6 @@
 import CreateIPDialog from "@components/dialogs/create-ip-dialog";
 import DeleteIPDialog from "@components/dialogs/delete-ip-dialog";
 import EditIPDialog from "@components/dialogs/edit-ip-dialog";
-import IPAddressList from "@components/ip-address-list";
 import { Button } from "@components/ui/button";
 import {
   Pagination,

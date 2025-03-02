@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Tymon\JWTAuth\Exceptions\JWTException;
+use Tymon\JWTAuth\Exceptions\TokenExpiredException;
+use Tymon\JWTAuth\Exceptions\TokenInvalidException;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
 class UsersController extends Controller
@@ -83,6 +85,40 @@ class UsersController extends Controller
                 'message' => 'Unauthorized',
                 'error' => $e->getMessage(),
             ], 401);
+        }
+    }
+
+    public function refresh() {
+        try {
+            $user = JWTAuth::parseToken()->authenticate();
+        } catch (Exception $e) {
+            if ($e instanceof TokenInvalidException){
+                $status     = 401;
+                $message    = 'This token is invalid. Please Login';
+                return response()->json(compact('status','message'),401);
+            } else if ($e instanceof TokenExpiredException) {
+                // If the token is expired, then it will be refreshed and added to the headers
+                try {
+                    $refreshed = JWTAuth::refresh(JWTAuth::getToken());
+                    $user = JWTAuth::setToken($refreshed)->toUser();
+                    $userModel = User::where('id', $user->id)->first();
+
+                    return response()->json([
+                        'user' => $user,
+                        'permissions' => $userModel->getAllPermissions()->pluck('name'),
+                        'roles' => $userModel->getRoleNames(),
+                        'token' => $refreshed,
+                    ], 200);
+                } catch (JWTException $e) {
+                    return response()->json([
+                        'code'   => 401,
+                        'message' => 'Token cannot be refreshed, please Login again'
+                    ]);
+                }
+            }else{
+                $message = 'Authorization Token not found';
+                return response()->json(compact('message'), 401);
+            }
         }
     }
 

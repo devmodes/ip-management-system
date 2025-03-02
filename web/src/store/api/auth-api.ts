@@ -22,8 +22,19 @@ export const authApi = api.injectEndpoints({
         method: "GET",
       }),
     }),
+    refreshToken: builder.mutation({
+      query: () => ({
+        url: "/auth/refresh-token",
+        method: "POST",
+      }),
+    }),
   }),
   overrideExisting: false,
 });
 
-export const { useSigninMutation, useSignupMutation, useMeQuery } = authApi;
+export const {
+  useSigninMutation,
+  useSignupMutation,
+  useMeQuery,
+  useRefreshTokenMutation,
+} = authApi;
