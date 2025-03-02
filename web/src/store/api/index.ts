@@ -6,7 +6,7 @@ import {
   fetchBaseQuery,
   FetchBaseQueryError,
 } from "@reduxjs/toolkit/query/react";
-import { authenticate } from "@store/reducers/auth";
+import { authenticate, logout } from "@store/reducers/auth";
 import { RootState } from "@store/store";
 
 const baseQuery = fetchBaseQuery({
@@ -53,7 +53,7 @@ const baseQueryWithReauth: BaseQueryFn<
       // retry the initial query
       result = await baseQuery(args, api, extraOptions);
     } else {
-      // api.dispatch(loggedOut());
+      api.dispatch(logout());
     }
   }
   return result;
