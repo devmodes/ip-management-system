@@ -1,5 +1,6 @@
 import { DashboardLayout } from "@layouts/dashboard-layout";
 import IPAddressPage from "@pages/ip-address-page";
+import IPAddressesPage from "@pages/ip-addresses-page";
 import SigninPage from "@pages/signin-page";
 import SignupPage from "@pages/signup-page";
 import AuthGuard from "@routes/auth-guard";
@@ -27,7 +28,8 @@ function AppRouter() {
         <Route element={<AuthGuard />}>
           <Route path="/app" element={<DashboardLayout />}>
             <Route path="" element={<h1>Dashboard</h1>} />
-            <Route path="ip-address" element={<IPAddressPage />} />
+            <Route path="ip-address" element={<IPAddressesPage />} />
+            <Route path="ip-address/:id" element={<IPAddressPage />} />
           </Route>
         </Route>
       </Routes>
