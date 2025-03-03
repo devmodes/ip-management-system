@@ -2,47 +2,49 @@
 
 namespace App\Contracts;
 
+use Illuminate\Http\JsonResponse;
+
 class Result
 {
-    public function unauthorized(...$args) {
-        return response()->json([
+    public function unauthorized(...$args): JsonResponse {
+        return response()->json(data: [
             "message" => "You don't have permission to perform this action",
             ...[...$args],
-        ], 401);
+        ], status: 401);
     }
 
-    public function badRequest(...$args){
-        return response()->json([
+    public function badRequest(...$args): JsonResponse {
+        return response()->json(data: [
             "message" => "Bad Request",
             ...[...$args],
-        ], 400);
+        ], status: 400);
     }
 
-    public function unproccessable(...$args){
-        return response()->json([
+    public function unproccessable(...$args): JsonResponse {
+        return response()->json(data: [
             "message" => "Sorry we couldn't process your transaction",
             ...[...$args],
-        ], 500);
+        ], status: 500);
     }
 
-    public function serverError(...$args){
-        return response()->json([
+    public function serverError(...$args): JsonResponse {
+        return response()->json(data: [
             "message" => "Something went wrong!",
             ...[...$args],
-        ], 500);
+        ], status: 500);
     }
 
-    public function success(...$args){
-        return response()->json([
+    public function success(...$args): JsonResponse {
+        return response()->json(data: [
             "message" => "Request Success",
             ...[...$args],
-        ], 200);
+        ], status: 200);
     }
 
-    public function created(...$args){
+    public function created(...$args): JsonResponse {
         return response()->json([
             "message" => "Created successfully",
             ...[...$args],
-        ], 500);
+        ], status: 500);
     }
 }
