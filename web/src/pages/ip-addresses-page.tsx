@@ -58,6 +58,19 @@ function IPAddressesPage() {
     return <div>Something went wrong</div>;
   }
 
+  if (!ipAddresses.data.length) {
+    return (
+      <div className="w-full h-[85vh] flex items-center justify-center">
+        <div className="flex flex-col items-center justify-center gap-4">
+          <h2>There are no recorded IP Address yet</h2>
+          <CreateIPDialog>
+            <Button>Add IP Address</Button>
+          </CreateIPDialog>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div>
       <CreateIPDialog>
