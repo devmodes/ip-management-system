@@ -1,16 +1,16 @@
 <?php
 
-use App\Http\Controllers\UsersController;
-use App\Http\Middleware\JwtMiddleware;
 use Illuminate\Support\Facades\Route;
+use App\Http\Middleware\JwtMiddleware;
+use App\Http\Controllers\AuthController;
 
-Route::post("signup", [UsersController::class, "signup"]);
-Route::post("signin", [UsersController::class, "signin"]);
+Route::controller(AuthController::class)->group(function() {
+    Route::post("signup", "signup");
+    Route::post("signin", "signin");
+    Route::get("refresh", "refresh");
 
-Route::get("refresh", [UsersController::class, "refresh"]);
-
-Route::middleware([JwtMiddleware::class])->group(function(): void {
-    Route::get("", [UsersController::class, "index"]);
-    Route::get("me", [UsersController::class, "me"]);
-    Route::post("signout", [UsersController::class,"signout"]);
+    Route::middelware([JwtMiddleware::class])->group(function() {
+        Route::get("me", "me");
+        Route::post("signout", "signout");
+    });
 });
