@@ -30,10 +30,7 @@ class UsersController extends Controller
 
             $token = JWTAuth::fromUser($user);
 
-            return response()->json([
-                'user' => $user,
-                'token' => $token,
-            ], 201);
+            return $this->created(user: $user, token: $token);
         });
     }
 
@@ -41,9 +38,7 @@ class UsersController extends Controller
         $credentials = $request->only('email','password');
         try {
             if (!$token = JWTAuth::attempt($credentials)) {
-                return response()->json([
-                    'message' => 'Invalid Credentials',
-                ], 401);
+                return $this->unauthorized(message: "Incorrect email or password");
             }
 
             $user = Auth::user();
@@ -55,41 +50,33 @@ class UsersController extends Controller
                 'roles' => $userModel->getRoleNames(),
             ])->fromUser($user);
 
-            return response()->json([
-                'user' => $userModel,
-                'permissions' => $userModel->getAllPermissions()->pluck('name'),
-                'roles' => $userModel->getRoleNames(),
-                'token' => $token,
-            ], 200);
+            return $this->success(
+                user: $userModel,
+                permissions: $userModel->getAllPermissions()->pluck('name'),
+                roles: $userModel->getRoleNames(),
+                token: $token,
+            );
         } catch (JWTException $e) {
-            return response()->json([
-                'message' => 'Invalid Credentials',
-                'error' => $e->getMessage(),
-            ], 401);
+            return $this->serverError();
         }
     }
 
     public function me() {
         try {
             if (! $user = JWTAuth::parseToken()->authenticate()) {
-                return response()->json([
-                    'message' => 'Unauthorized',
-                    'error' => null,
-                ], 401);
+                return $this->unauthorized();
             }
 
             $userModel = User::where('id', $user->id)->first();
 
-            return response()->json([
-                'user' => $user,
-                'permissions' => $userModel->getAllPermissions()->pluck('name'),
-                'roles' => $userModel->getRoleNames(),
-            ], 200);
+            return $this->success(
+                user: $user,
+                permissions: $userModel->getAllPermissions()->pluck('name'),
+                roles: $userModel->getRoleNames(),
+            );
+
         } catch (JWTException $e) {
-            return response()->json([
-                'message' => 'Unauthorized',
-                'error' => $e->getMessage(),
-            ], 401);
+            return $this->serverError();
         }
     }
 
@@ -97,10 +84,8 @@ class UsersController extends Controller
         try {
             $user = JWTAuth::parseToken()->authenticate();
         } catch (Exception $e) {
-            if ($e instanceof TokenInvalidException){
-                $status     = 401;
-                $message    = 'This token is invalid. Please Login';
-                return response()->json(compact('status','message'),401);
+            if ($e instanceof TokenInvalidException) {
+                return $this->unauthorized(message: "Invalid Token");
             } else if ($e instanceof TokenExpiredException) {
                 // If the token is expired, then it will be refreshed and added to the headers
                 try {
@@ -108,21 +93,17 @@ class UsersController extends Controller
                     $user = JWTAuth::setToken($refreshed)->toUser();
                     $userModel = User::where('id', $user->id)->first();
 
-                    return response()->json([
-                        'user' => $user,
-                        'permissions' => $userModel->getAllPermissions()->pluck('name'),
-                        'roles' => $userModel->getRoleNames(),
-                        'token' => $refreshed,
-                    ], 200);
+                    return $this->success(
+                        user: $user,
+                        permissions: $userModel->getAllPermissions()->pluck('name'),
+                        roles: $userModel->getRoleNames(),
+                        token: $refreshed,
+                    );
                 } catch (JWTException $e) {
-                    return response()->json([
-                        'code'   => 401,
-                        'message' => 'Token cannot be refreshed, please Login again'
-                    ]);
+                    return $this->unauthorized(message: "Token cannot be refreshed, please Signin again");
                 }
-            }else{
-                $message = 'Authorization Token not found';
-                return response()->json(compact('message'), 401);
+            } else {
+                return $this->unauthorized(message: "Token not found");
             }
         }
     }
@@ -132,29 +113,20 @@ class UsersController extends Controller
             $user = User::where('id', Auth::user()->id)->first();
 
             if ($request->get('type') === 'permission' && !$user->hasPermissionTo($request->get('key'))) {
-                return response()->json([
-                    'message' => 'Unauthorized',
-                    'error' => null,
-                ], 401);
+                return $this->unauthorized();
             }
 
             if ($request->get('type') === 'role' && !$user->hasRole($request->get('key'))) {
-                return response()->json([
-                    'message' => 'Unauthorized',
-                    'error' => null,
-                ], 401);
+                return $this->unauthorized();
             }
 
-            return response()->json([
-                'user' => $user,
-                'permissions' => $user->getAllPermissions()->pluck('name'),
-                'roles' => $user->getRoleNames(),
-            ], 200);
+            return $this->success(
+                user: $user,
+                permissions: $user->getAllPermissions()->pluck('name'),
+                roles: $user->getRoleNames(),
+            );
         } catch (Exception $e) {
-            return response()->json([
-                'message' => 'Unauthorized',
-                'error' => $e->getMessage(),
-            ], 401);
+            return $this->serverError(error: $e->getMessage());
         }
     }
 
@@ -162,14 +134,9 @@ class UsersController extends Controller
         try {
             JWTAuth::invalidate(JWTAuth::getToken());
 
-            return response()->json([
-                'message' => 'Successfully logged out!',
-            ], 200);
+            return $this->success(message: "Signed out successfully");
         } catch (JWTException $e) {
-            return response()->json([
-                'message' => 'Unauthorized',
-                'error' => $e->getMessage(),
-            ], 401);
+            return $this->serverError(error: $e->getMessage());
         }
     }
 }
