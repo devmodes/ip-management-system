@@ -24,7 +24,8 @@ export const authMiddleware = (
   try {
     const token = req.headers.authorization;
 
-    if (token) {
+    // Make sure to not block the request for refresh tokens
+    if (token && !req.path.includes("auth/refresh")) {
       isAuthorized(token)
         .then((res: any) => next())
         .catch(() => {
