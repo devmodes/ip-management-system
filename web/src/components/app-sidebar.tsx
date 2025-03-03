@@ -1,18 +1,5 @@
 import * as React from "react";
-import {
-  ActivityIcon,
-  BookOpen,
-  Bot,
-  Command,
-  LifeBuoy,
-  Map,
-  NetworkIcon,
-  PieChart,
-  Send,
-  Settings2,
-  SquareTerminal,
-  UsersIcon,
-} from "lucide-react";
+import { ActivityIcon, Command, NetworkIcon, UsersIcon } from "lucide-react";
 
 import { NavContents } from "@components/nav-projects";
 import { NavUser } from "@components/nav-user";
