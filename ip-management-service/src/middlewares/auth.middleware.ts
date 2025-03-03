@@ -1,32 +1,33 @@
 import { isAuthorized } from "@services/auth.service";
+import config from "@utils/config";
 import { UnauthorizedException } from "@utils/exceptions";
 import { NextFunction, Request, Response } from "express";
+import { verify } from "jsonwebtoken";
 import { User } from "src/types/User";
-
-type ResponseData = {
-  data: {
-    user: User;
-    permissions: string[];
-    roles: string[];
-  };
-};
 
 export const auth = async (req: Request, _: Response, next: NextFunction) => {
   try {
-    const token = req.headers.authorization;
+    const bearerToken = req.headers.authorization;
 
-    isAuthorized(token)
-      .then((res: any) => res.data)
-      .then((data: ResponseData["data"]) => {
-        const { user, permissions, roles } = data;
-        req.user = {
-          ...user,
-          permissions,
-          roles,
-        };
-        next();
-      })
-      .catch(() => next(new UnauthorizedException()));
+    if (!bearerToken) {
+      next(new UnauthorizedException());
+    }
+
+    const token = bearerToken?.split(" ")[1];
+    const decoded: any = verify(token as string, config("app.jwt_secret"));
+    const { user, permissions, roles } = decoded;
+
+    const userData: User = {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      permissions,
+      roles,
+    };
+
+    req.user = userData;
+
+    next();
   } catch (error) {
     next(new UnauthorizedException());
   }

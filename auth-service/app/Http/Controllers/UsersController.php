@@ -47,13 +47,18 @@ class UsersController extends Controller
             }
 
             $user = Auth::user();
-            $token = JWTAuth::claims([])->fromUser($user);
-
             $userModel = User::where('id', $user->id)->first();
 
-            return response()->json([
-                'user' => $user,
+            $token = JWTAuth::claims([
+                'user' => $userModel,
                 'permissions' => $userModel->getAllPermissions()->pluck('name'),
+                'roles' => $userModel->getRoleNames(),
+            ])->fromUser($user);
+
+            return response()->json([
+                'user' => $userModel,
+                'permissions' => $userModel->getAllPermissions()->pluck('name'),
+                'roles' => $userModel->getRoleNames(),
                 'token' => $token,
             ], 200);
         } catch (JWTException $e) {
