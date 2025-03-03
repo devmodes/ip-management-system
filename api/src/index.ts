@@ -4,6 +4,7 @@ import morgan from "morgan";
 import helmet from "helmet";
 import { rateLimitAndTimeout } from "@middlewares/rateLimiter.middleware";
 import { createProxyMiddleware } from "http-proxy-middleware";
+import { authMiddleware } from "@middlewares/auth.middleware";
 const services = require("./services.json");
 
 const port = 3001;
@@ -15,6 +16,7 @@ app.use(morgan("combined"));
 app.disable("x-powered-by");
 
 app.use(rateLimitAndTimeout);
+app.use(authMiddleware);
 
 services.forEach(({ route, target }: { route: string; target: string }) => {
   const proxyOptions = {

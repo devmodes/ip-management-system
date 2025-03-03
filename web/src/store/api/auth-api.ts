@@ -28,6 +28,12 @@ export const authApi = api.injectEndpoints({
         method: "POST",
       }),
     }),
+    signout: builder.mutation({
+      query: () => ({
+        url: "/auth/signout",
+        method: "POST",
+      }),
+    }),
   }),
   overrideExisting: false,
 });
@@ -37,4 +43,5 @@ export const {
   useSignupMutation,
   useMeQuery,
   useRefreshTokenMutation,
+  useSignoutMutation,
 } = authApi;
