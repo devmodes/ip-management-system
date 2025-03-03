@@ -34,7 +34,7 @@ class AuthController extends Controller
     }
 
     public function signin(UserSigninRequest $request): JsonResponse {
-        $credentials = $request->only('email','password');
+        $credentials = $request->only('email', 'password');
         try {
             if (!$token = JWTAuth::attempt($credentials)) {
                 return $this->unauthorized(message: "Incorrect email or password");
